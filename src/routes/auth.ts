@@ -16,7 +16,6 @@ authRouter.post(
       res.status(400).json({ message: "Name, email, and password are required" });
       return;
     }
-
     const existing = await UserModel.findOne({ email: email.toLowerCase() });
     if (existing) {
       res.status(409).json({ message: "That email is already registered" });
