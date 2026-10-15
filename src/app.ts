@@ -1,15 +1,50 @@
+import "dotenv/config";
 import express, { type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import { connectDB } from "./config/db.js";
 import { authRouter } from "./routes/auth.js";
 import { itemRouter } from "./routes/items.js";
 
 const app = express();
 
-app.use(cors());
+const rawOrigins = process.env.CORS_ORIGIN ?? "http://localhost:5173";
+const allowedOrigins = rawOrigins
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(requestOrigin, callback) {
+      if (!requestOrigin) {
+        callback(null, true);
+        return;
+      }
+      if (allowedOrigins.includes(requestOrigin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin '${requestOrigin}' is not allowed by CORS`));
+      }
+    },
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
-// Health check
+app.use(async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("Database connection failed");
+    res.status(503).json({ message: "Database unavailable" });
+  }
+});
+
 app.get("/api/health", (_req: Request, res: Response) => {
   res.status(200).json({
     ok: true,
@@ -20,14 +55,12 @@ app.get("/api/health", (_req: Request, res: Response) => {
 app.use("/api/auth", authRouter);
 app.use("/api/items", itemRouter);
 
-// 404 handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     message: `No route for ${req.method} ${req.originalUrl}`,
   });
 });
 
-// Global error handler
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (
     err instanceof Error &&
