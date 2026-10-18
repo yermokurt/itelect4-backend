@@ -2,6 +2,13 @@
 
 Backend for the Campus Lost & Found System built with Node.js, Express, TypeScript, and MongoDB.
 
+### Links
+
+Deployed Frontend Link: https://yermo-itelect4-project.vercel.app
+
+Deployed Backend Link: https://yermo-itelect4-backend.vercel.app
+
+
 ## Tech Stack
 
 - Node.js + Express
@@ -25,6 +32,7 @@ npm install
 MONGODB_URI=your_mongodb_atlas_connection_string
 JWT_SECRET=your_secret_key
 PORT=4000
+CORS_ORIGIN=
 ```
 
 4. Start the development server
@@ -56,11 +64,3 @@ npm run dev
 | Method | Route | Description |
 |---|---|---|
 | GET | `/api/health` | Check server and database status |
-
-## Authentication
-
-Protected routes require a Bearer token in the Authorization header:
-
-```
-Authorization: Bearer <token>
-```
