@@ -4,6 +4,8 @@ Backend for the Campus Lost & Found System built with Node.js, Express, TypeScri
 
 ### Links
 
+Frontend Repo: https://github.com/yermokurt/itelect4-project
+
 Deployed Frontend Link: https://yermo-itelect4-project.vercel.app
 
 Deployed Backend Link: https://yermo-itelect4-backend.vercel.app
