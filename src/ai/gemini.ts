@@ -21,7 +21,7 @@ export async function reviewProject(description: string): Promise<Review> {
   const ai = getClient();
 
   const response = await ai.models.generateContent({
-    model: "gemini-flash-latest",
+    model: "gemini-flash-lite-latest",
     contents: buildContents(description),
     config: {
       systemInstruction: SYSTEM_PROMPT,
